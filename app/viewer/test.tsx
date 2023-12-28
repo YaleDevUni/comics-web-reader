@@ -154,8 +154,9 @@ const FileBrowser: React.FC = () => {
           </div>
           {/* Display the current image */}
           {webpImages.length > 0 && (
-            <div key={webpImages[currentImageIndex].name}>
+            <div className=" h-screen " key={webpImages[currentImageIndex].name}>
               <img
+                className="object-cover h-full w-full"
                 src={URL.createObjectURL(
                   new Blob([webpImages[currentImageIndex].data], {
                     type: "image/webp",
