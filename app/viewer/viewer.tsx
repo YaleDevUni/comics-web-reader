@@ -91,7 +91,7 @@ const Viewer: React.FC = () => {
         if (fileHandle) {
           const images = await processZipData(fileHandle);
           setWebpImages(images);
-          console.log("WebP Images:", images);
+          setCurrentImageIndex(0);
         }
       } catch (error) {
         console.error("Error processing ZIP file:", error);
@@ -154,7 +154,10 @@ const Viewer: React.FC = () => {
           </div>
           {/* Display the current image */}
           {webpImages.length > 0 && (
-            <div className=" h-screen " key={webpImages[currentImageIndex].name}>
+            <div
+              className=" h-screen "
+              key={webpImages[currentImageIndex].name}
+            >
               <img
                 className="object-cover h-full w-full"
                 src={URL.createObjectURL(
