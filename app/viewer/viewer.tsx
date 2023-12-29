@@ -10,7 +10,7 @@ import {
   FaAngleDoubleLeft,
 } from "react-icons/fa";
 
-const FileBrowser: React.FC = () => {
+const Viewer: React.FC = () => {
   const pickerOpts = {
     types: [
       {
@@ -173,4 +173,4 @@ const FileBrowser: React.FC = () => {
   );
 };
 
-export default FileBrowser;
+export default Viewer;
