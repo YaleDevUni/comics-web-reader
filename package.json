@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.7",
     "jszip": "^3.10.1",
     "next": "14.0.4",
     "node-fetch": "^3.3.2",
