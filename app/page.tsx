@@ -19,7 +19,7 @@ export default function Home() {
                 pathname: "/viewer",
                 query: { index: book.id },
               }}
-              key={book.id}
+              key={book.id + "link"}
               className="col-span-1 bg-gray-900 rounded-md p-2 "
             >
               <Image
@@ -31,15 +31,21 @@ export default function Home() {
                 alt="book cover"
                 width={500}
                 height={200}
-                objectFit="cover"
+                key={book.id + "image"}
               />
-              <div className=" text-center text-2xl text-white">
+              <div
+                key={book.id + "title"}
+                className=" text-center text-2xl text-white"
+              >
                 {book.title.split(".")[0]}
               </div>
             </Link>
           ))
           .concat(
-            <div className=" col-span-1 bg-gray-900 rounded-md p-2 flex items-center justify-center ">
+            <div
+              key={"addBook"}
+              className=" col-span-1 bg-gray-900 rounded-md p-2 flex items-center justify-center "
+            >
               <IoMdAddCircleOutline className="fill-white" size={200} />
             </div>
           )}

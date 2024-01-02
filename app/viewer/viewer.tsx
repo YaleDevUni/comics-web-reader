@@ -15,7 +15,6 @@ import {
 
 const Viewer: React.FC = () => {
   const searchParams = useSearchParams();
-  console.log("wwww", searchParams.get("index"));
 
   const pickerOpts = {
     types: [
@@ -115,20 +114,20 @@ const Viewer: React.FC = () => {
 
   useEffect(() => {
     const handleDisplayContent = async () => {
-      // try {
-      if (fileHandle) {
-        const images = await processZipData(
-          fileHandle.base64String,
-          fileHandle.name,
-          fileHandle.handle,
-          searchParams.get("index") ? true : false
-        );
-        setWebpImages(images);
-        setCurrentImageIndex(0);
+      try {
+        if (fileHandle.base64String) {
+          const images = await processZipData(
+            fileHandle.base64String,
+            fileHandle.name,
+            fileHandle.handle,
+            searchParams.get("index") ? true : false
+          );
+          setWebpImages(images);
+          setCurrentImageIndex(0);
+        }
+      } catch (error) {
+        console.error("Error processing ZIP file:", error);
       }
-      // } catch (error) {
-      //   console.error("Error processing ZIP file:", error);
-      // }
     };
 
     // Call handleDisplayContent when fileHandle changes

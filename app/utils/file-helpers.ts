@@ -51,7 +51,7 @@ export const readByFileHandle = async (
       reader.onerror = (error) => {
         reject(error);
       };
-      console.log(file);
+
       reader.readAsDataURL(file as Blob);
     });
   } catch (error: any) {
