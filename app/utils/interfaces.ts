@@ -10,5 +10,5 @@ export interface WebPImage {
 export interface FileData {
   base64String: string;
   name: string;
-  path: string;
+  handle?: FileSystemFileHandle | undefined;
 }

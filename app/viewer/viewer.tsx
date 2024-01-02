@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
 import processZipData from "../utils/zip-to-webp";
-import { readFileByPath, readFileByPicker } from "../utils/file-helpers";
+import { readFileByPicker, readByFileHandle } from "../utils/file-helpers";
 import type { WebPImage as WebPImageInterface } from "./interfaces";
 import { FileData } from "../utils/interfaces";
 import { useSearchParams } from "next/navigation";
+import { db } from "../db/db";
 import {
   FaAngleRight,
   FaAngleDoubleRight,
@@ -14,7 +15,8 @@ import {
 
 const Viewer: React.FC = () => {
   const searchParams = useSearchParams();
-  console.log(searchParams.get("path"));
+  console.log("wwww", searchParams.get("index"));
+
   const pickerOpts = {
     types: [
       {
@@ -29,13 +31,26 @@ const Viewer: React.FC = () => {
   };
   const defaultFileHandle: FileData = {
     name: "",
-    path: "",
     base64String: "",
   };
   const [webpImages, setWebpImages] = useState<WebPImageInterface[]>([]);
   const [fileHandle, setFileHandle] = useState<FileData>(defaultFileHandle);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [jumpPage, setJumpPage] = useState<string>("");
+  const loadFileContentByHandle = async () => {
+    try {
+      if (searchParams.get("index")) {
+        const book = await db.books.get(
+          parseInt(searchParams.get("index") as string, 10)
+        );
+        const fileData = await readByFileHandle(book?.handle);
+        setFileHandle(fileData);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
   const loadFileContent = async () => {
     try {
       const fileData = await readFileByPicker(pickerOpts);
@@ -92,22 +107,28 @@ const Viewer: React.FC = () => {
       navigateImage("next");
     }
   };
+  useEffect(() => {
+    if (searchParams.get("index") && fileHandle) {
+      loadFileContentByHandle();
+    }
+  }, [searchParams.get("index")]);
 
   useEffect(() => {
     const handleDisplayContent = async () => {
-      try {
-        if (fileHandle) {
-          const images = await processZipData(
-            fileHandle.base64String,
-            fileHandle.name,
-            fileHandle.path
-          );
-          setWebpImages(images);
-          setCurrentImageIndex(0);
-        }
-      } catch (error) {
-        console.error("Error processing ZIP file:", error);
+      // try {
+      if (fileHandle) {
+        const images = await processZipData(
+          fileHandle.base64String,
+          fileHandle.name,
+          fileHandle.handle,
+          searchParams.get("index") ? true : false
+        );
+        setWebpImages(images);
+        setCurrentImageIndex(0);
       }
+      // } catch (error) {
+      //   console.error("Error processing ZIP file:", error);
+      // }
     };
 
     // Call handleDisplayContent when fileHandle changes

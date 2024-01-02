@@ -9,7 +9,7 @@ export interface Book {
   isSeries: boolean;
   seriesTitle?: string;
   seriesNumber?: number;
-  path: string;
+  handle?: FileSystemFileHandle;
   image?: Uint8Array | Blob | string;
 }
 
@@ -22,7 +22,7 @@ export class MySubClassedDexie extends Dexie {
     this.version(1).stores({
       // Change 'friends' to 'books'
       books:
-        "++id, title, author, category, genre, isSeries, seriesTitle, seriesNumber, path, image",
+        "++id, title, author, category, genre, isSeries, seriesTitle, seriesNumber, handle, image",
     });
   }
 }

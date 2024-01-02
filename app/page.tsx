@@ -17,7 +17,7 @@ export default function Home() {
             <Link
               href={{
                 pathname: "/viewer",
-                query: { path: book.path },
+                query: { index: book.id },
               }}
               key={book.id}
               className="col-span-1 bg-gray-900 rounded-md p-2 "

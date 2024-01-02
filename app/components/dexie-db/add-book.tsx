@@ -20,7 +20,7 @@ export function AddBookForm({
         title,
         author,
         isSeries,
-        path: "",
+        // handle: "",
       });
 
       setStatus(
