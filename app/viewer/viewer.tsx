@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
 import processZipData from "../utils/zip-to-webp";
-import getFile from "../utils/file-helpers";
+import { readFileByPath, readFileByPicker } from "../utils/file-helpers";
 import type { WebPImage as WebPImageInterface } from "./interfaces";
+import { FileData } from "../utils/interfaces";
+import { useSearchParams } from "next/navigation";
 import {
   FaAngleRight,
   FaAngleDoubleRight,
@@ -11,6 +13,8 @@ import {
 } from "react-icons/fa";
 
 const Viewer: React.FC = () => {
+  const searchParams = useSearchParams();
+  console.log(searchParams.get("path"));
   const pickerOpts = {
     types: [
       {
@@ -23,15 +27,19 @@ const Viewer: React.FC = () => {
     excludeAcceptAllOption: true,
     multiple: false,
   };
-
+  const defaultFileHandle: FileData = {
+    name: "",
+    path: "",
+    base64String: "",
+  };
   const [webpImages, setWebpImages] = useState<WebPImageInterface[]>([]);
-  const [fileHandle, setFileHandle] = useState<string>("");
+  const [fileHandle, setFileHandle] = useState<FileData>(defaultFileHandle);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [jumpPage, setJumpPage] = useState<string>("");
   const loadFileContent = async () => {
     try {
-      const fileContent = await getFile(pickerOpts);
-      setFileHandle(fileContent);
+      const fileData = await readFileByPicker(pickerOpts);
+      setFileHandle(fileData);
     } catch (error: any) {
       console.error(error.message);
     }
@@ -89,7 +97,11 @@ const Viewer: React.FC = () => {
     const handleDisplayContent = async () => {
       try {
         if (fileHandle) {
-          const images = await processZipData(fileHandle);
+          const images = await processZipData(
+            fileHandle.base64String,
+            fileHandle.name,
+            fileHandle.path
+          );
           setWebpImages(images);
           setCurrentImageIndex(0);
         }
@@ -107,7 +119,7 @@ const Viewer: React.FC = () => {
   }, [currentImageIndex]);
 
   useEffect(() => {
-    if (fileHandle.length > 0) {
+    if (fileHandle?.base64String?.length > 0) {
       // Add global key press listener
       document.addEventListener("keydown", handleGlobalKeyPress);
       // Clean up the listener on component unmount
@@ -125,7 +137,7 @@ const Viewer: React.FC = () => {
       >
         Open Files
       </button>
-      {fileHandle.length > 0 && (
+      {fileHandle.base64String.length > 0 && (
         <>
           <div className="flex justify-center">
             <button onClick={() => navigateImage("first")}>

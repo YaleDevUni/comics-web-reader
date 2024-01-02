@@ -15,11 +15,12 @@ export function AddBookForm({
   async function addBook() {
     try {
       // Add the new book!
-      
+
       const id = await db.books.add({
         title,
         author,
         isSeries,
+        path: "",
       });
 
       setStatus(

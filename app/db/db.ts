@@ -1,4 +1,5 @@
 import Dexie, { Table } from "dexie";
+
 export interface Book {
   id?: number;
   title: string;
@@ -8,18 +9,20 @@ export interface Book {
   isSeries: boolean;
   seriesTitle?: string;
   seriesNumber?: number;
+  path: string;
+  image?: Uint8Array | Blob | string;
 }
 
 export class MySubClassedDexie extends Dexie {
-  // 'friends' is added by dexie when declaring the stores()
-  // We just tell the typing system this is the case
+  // 'books' is used to match your React component
   books!: Table<Book>;
 
   constructor() {
     super("myDatabase");
     this.version(1).stores({
-      friends:
-        "++id, title, author, category, genre, isSeries, seriesTitle, seriesNumber",
+      // Change 'friends' to 'books'
+      books:
+        "++id, title, author, category, genre, isSeries, seriesTitle, seriesNumber, path, image",
     });
   }
 }

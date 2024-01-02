@@ -23,12 +23,9 @@ export default function RootLayout({
           content="Uef0m15hRaJcKbjoc6d4A81FK93U4EwXgqeiArhiFHU"
         />
       </head>
-      <body className={inter.className} suppressHydrationWarning={true}>
-        <div>
-          {" "}
-          <Nav />
-          {children}
-        </div>
+      <body className={inter.className}>
+        <Nav />
+        {children}
       </body>
     </html>
   );
