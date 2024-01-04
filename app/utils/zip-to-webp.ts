@@ -2,6 +2,15 @@ import JSZip from "jszip";
 import { db } from "../db/db";
 import { compress } from "image-conversion";
 import type { WebPImage } from "../viewer/interfaces";
+/**
+ * Process the contents of a ZIP file and return an array of WebP images (name and binary data)
+ * @param zipDatar : string
+ * @param fileName : string
+ * @param handle : FileSystemFileHandle | undefined
+ * @param reOpen : boolean
+ * @param addOnly : boolean
+ * @returns
+ */
 async function processZipData(
   zipDatar: string,
   fileName: string,
@@ -11,7 +20,6 @@ async function processZipData(
 ): Promise<WebPImage[]> {
   const webpImages: WebPImage[] = [];
   const zipData = zipDatar.replace(/^data:.+;base64,/, "");
-
   try {
     // Unzip the file
     const zip = new JSZip();
@@ -25,6 +33,13 @@ async function processZipData(
         continue;
       }
       const imageFile = zipInstance.files[imageName];
+
+      // Check if the file is a directory
+      if (imageFile.dir) {
+        // Skip directories
+        continue;
+      }
+
       const imageData: Uint8Array = await imageFile.async("uint8array");
 
       // Now imageData contains the binary data of the WebP image

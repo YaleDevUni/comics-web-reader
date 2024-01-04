@@ -3,12 +3,7 @@ import Viewer from "./viewer"; // adjust the path according to your file structu
 import { useRouter } from "next/navigation";
 import { BookList } from "../components/books/book-list"; // adjust the path according to your file structure
 const App: React.FC = () => {
-  return (
-    <div>
-      <Viewer />
-      {/* <BookList /> */}
-    </div>
-  );
+  return <Viewer />;
 };
 
 export default App;

@@ -18,6 +18,7 @@ export default function OpenAndSave({
     excludeAcceptAllOption: true,
     multiple: false,
   };
+
   const loadFileContent = async () => {
     try {
       const fileData = await readFileByPicker(pickerOpts);
@@ -25,12 +26,13 @@ export default function OpenAndSave({
         fileData.base64String,
         fileData.name,
         fileData.handle,
-        false
+        false,
+        true
       );
     } catch (error: any) {
       console.error(error.message);
     }
   };
 
-  return <button onClick={loadFileContent}>children</button>;
+  return <button onClick={loadFileContent}>{children}</button>;
 }
