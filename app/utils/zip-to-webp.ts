@@ -6,7 +6,8 @@ async function processZipData(
   zipDatar: string,
   fileName: string,
   handle: FileSystemFileHandle | undefined,
-  reOpen: boolean
+  reOpen: boolean,
+  addOnly?: boolean
 ): Promise<WebPImage[]> {
   const webpImages: WebPImage[] = [];
   const zipData = zipDatar.replace(/^data:.+;base64,/, "");
@@ -18,13 +19,11 @@ async function processZipData(
     // Process the contents of the ZIP file
     // (In this case, assuming it contains WebP images)
     const imageNames: string[] = Object.keys(zipInstance.files);
-
     for (const imageName of imageNames) {
       // Skip files or directories with names starting with "__MACOSX"
       if (imageName.startsWith("__MACOSX/")) {
         continue;
       }
-
       const imageFile = zipInstance.files[imageName];
       const imageData: Uint8Array = await imageFile.async("uint8array");
 
@@ -42,6 +41,7 @@ async function processZipData(
           image: compressedImage,
         });
       }
+      if (addOnly) break;
     }
     // Sort the array by name
     webpImages.sort((a, b) => a.name.localeCompare(b.name));
