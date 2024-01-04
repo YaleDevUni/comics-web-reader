@@ -1,8 +1,12 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
 import processZipData from "../utils/zip-to-webp";
-import getFile from "../utils/file-helpers";
+import { readFileByPicker, readByFileHandle } from "../utils/file-helpers";
 import type { WebPImage as WebPImageInterface } from "./interfaces";
+import { FileData } from "../utils/interfaces";
+import { useSearchParams } from "next/navigation";
+import { db } from "../db/db";
+import { useRouter } from "next/router";
 import {
   FaAngleRight,
   FaAngleDoubleRight,
@@ -11,6 +15,8 @@ import {
 } from "react-icons/fa";
 
 const Viewer: React.FC = () => {
+  const searchParams = useSearchParams();
+
   const pickerOpts = {
     types: [
       {
@@ -23,27 +29,56 @@ const Viewer: React.FC = () => {
     excludeAcceptAllOption: true,
     multiple: false,
   };
-
+  const defaultFileHandle: FileData = {
+    name: "",
+    base64String: "",
+  };
   const [webpImages, setWebpImages] = useState<WebPImageInterface[]>([]);
-  const [fileHandle, setFileHandle] = useState<string>("");
+  const [fileHandle, setFileHandle] = useState<FileData>(defaultFileHandle);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [jumpPage, setJumpPage] = useState<string>("");
-  const loadFileContent = async () => {
+  /**
+   * load file content by handle
+   */
+  const loadFileContentByHandle = async () => {
     try {
-      const fileContent = await getFile(pickerOpts);
-      setFileHandle(fileContent);
+      if (searchParams.get("index")) {
+        const book = await db.books.get(
+          parseInt(searchParams.get("index") as string, 10)
+        );
+        const fileData = await readByFileHandle(book?.handle);
+        setFileHandle(fileData);
+      }
     } catch (error: any) {
       console.error(error.message);
     }
   };
 
+  /**
+   * load file content
+   */
+  const loadFileContent = async () => {
+    try {
+      const fileData = await readFileByPicker(pickerOpts);
+      setFileHandle(fileData);
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
+  /**
+   * jump to valid page
+   */
   const handleJumpPage = () => {
     const page = parseInt(jumpPage, 10);
     if (!isNaN(page) && page >= 1 && page <= webpImages.length) {
       setCurrentImageIndex(page - 1);
     }
   };
-
+  /**
+   * set current image index
+   * @param direction : prev, next, first, last
+   */
   const navigateImage = (direction: string) => {
     switch (direction) {
       case "prev":
@@ -66,12 +101,19 @@ const Viewer: React.FC = () => {
         break;
     }
   };
+  /**
+   * for jump page input
+   * @param e
+   */
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleJumpPage();
     }
   };
-
+  /**
+   * key press handler
+   * @param e
+   */
   const handleGlobalKeyPress = (e: KeyboardEvent) => {
     if (e.key === "ArrowRight") {
       navigateImage("next");
@@ -85,11 +127,32 @@ const Viewer: React.FC = () => {
     }
   };
 
+  /**
+   * Load the file content when the component mounts
+   */
+  useEffect(() => {
+    if (searchParams.get("index") && fileHandle && !searchParams.get("new")) {
+      loadFileContentByHandle();
+    } else {
+      loadFileContent();
+    }
+  }, [searchParams.get("index")]);
+
+  /**
+   *
+   * Process the file content when fileHandle changes
+   */
   useEffect(() => {
     const handleDisplayContent = async () => {
       try {
-        if (fileHandle) {
-          const images = await processZipData(fileHandle);
+        if (fileHandle.base64String) {
+          console.log(searchParams.get("new") === "true");
+          const images = await processZipData(
+            fileHandle.base64String,
+            fileHandle.name,
+            fileHandle.handle,
+            searchParams.get("new") !== "true"
+          );
           setWebpImages(images);
           setCurrentImageIndex(0);
         }
@@ -101,13 +164,18 @@ const Viewer: React.FC = () => {
     // Call handleDisplayContent when fileHandle changes
     handleDisplayContent();
   }, [fileHandle]);
-
+  /**
+   * update jump page when current image index changes
+   */
   useEffect(() => {
     setJumpPage((currentImageIndex + 1).toString());
   }, [currentImageIndex]);
 
+  /**
+   * add global key press listener
+   */
   useEffect(() => {
-    if (fileHandle.length > 0) {
+    if (fileHandle?.base64String?.length > 0) {
       // Add global key press listener
       document.addEventListener("keydown", handleGlobalKeyPress);
       // Clean up the listener on component unmount
@@ -118,14 +186,8 @@ const Viewer: React.FC = () => {
   }); // Empty dependency array to run the effect only once during component mount
 
   return (
-    <div className="flex flex-col items-center">
-      <button
-        className="m-2 border-0 p-2 rounded-md bg-orange-500 w-fit"
-        onClick={loadFileContent}
-      >
-        Open Files
-      </button>
-      {fileHandle.length > 0 && (
+    <div className="flex flex-col items-center w-full">
+      {fileHandle.base64String.length > 0 && (
         <>
           <div className="flex justify-center">
             <button onClick={() => navigateImage("first")}>

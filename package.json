@@ -1,6 +1,6 @@
 {
   "name": "comics-web-reader",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.7",
+    "image-conversion": "^2.1.1",
     "jszip": "^3.10.1",
     "next": "14.0.4",
     "node-fetch": "^3.3.2",
