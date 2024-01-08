@@ -51,7 +51,6 @@ async function processZipData(
         db.books.add({
           title: fileName,
           author: "",
-          isSeries: false,
           handle,
           image: compressedImage,
         });

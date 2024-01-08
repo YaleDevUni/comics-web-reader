@@ -41,7 +41,7 @@ export default function Home() {
               ?.map((book) => (
                 <Link
                   href={{
-                    pathname: "/viewer",
+                    pathname: "/info",
                     query: { index: book.id },
                   }}
                   key={book.id + "link"}

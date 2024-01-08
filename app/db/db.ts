@@ -6,7 +6,6 @@ export interface Book {
   author: string;
   category?: string[];
   genre?: string[];
-  isSeries: boolean;
   seriesTitle?: string;
   seriesNumber?: number;
   handle?: FileSystemFileHandle;
@@ -22,7 +21,7 @@ export class MySubClassedDexie extends Dexie {
     this.version(1).stores({
       // Change 'friends' to 'books'
       books:
-        "++id, title, author, category, genre, isSeries, seriesTitle, seriesNumber, handle, image",
+        "++id, title, author, category, genre, seriesTitle, seriesNumber, handle, image",
     });
   }
 }

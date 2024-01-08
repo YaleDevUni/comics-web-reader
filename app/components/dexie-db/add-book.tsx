@@ -5,13 +5,10 @@ import { db, Book } from "../../db/db";
 export function AddBookForm({
   defaultTitle = "",
   defaultAuthor = "",
-  defaultIsSeries = false,
 }) {
   const [title, setTitle] = useState(defaultTitle);
   const [author, setAuthor] = useState(defaultAuthor);
   const [status, setStatus] = useState("");
-  const [isSeries, setIsSeries] = useState(defaultIsSeries);
-
   async function addBook() {
     try {
       // Add the new book!
@@ -19,7 +16,6 @@ export function AddBookForm({
       const id = await db.books.add({
         title,
         author,
-        isSeries,
         // handle: "",
       });
 
