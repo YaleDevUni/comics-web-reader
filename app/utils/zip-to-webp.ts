@@ -1,7 +1,7 @@
 import JSZip from "jszip";
 import { db } from "../db/db";
 import { compress } from "image-conversion";
-import type { WebPImage } from "../viewer/interfaces";
+import type { WebPImage } from "./interfaces";
 /**
  * Process the contents of a ZIP file and return an array of WebP images (name and binary data)
  * @param zipDatar : string
