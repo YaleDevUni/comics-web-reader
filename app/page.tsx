@@ -5,8 +5,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "./db/db";
 import Image from "next/image";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import OpenAndSave from "./components/buttons/open-and-save";
-import { useEffect } from "react";
 export default function Home() {
   const books = useLiveQuery(() => db.books.toArray());
   const isLoading = !books;

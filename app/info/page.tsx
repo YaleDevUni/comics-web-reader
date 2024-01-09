@@ -112,12 +112,15 @@ const App = () => {
         </div>
       </div>
       <div>
-        <div>Title: {book.title}</div>
+        <div>Title: {book.title.split(".")[0]}</div>
         <div>Author: {book.author !== "" ? book.author : "N/A"}</div>
         <div>Volume: {book.volume}</div>
         <div>
           Series: {book.series?.title !== undefined ? book.series.title : "N/A"}
         </div>
+        {/* <div className="flex"> */}
+        <hr className="m-2" />
+        <div>Tags:</div>
         <div className="flex flex-wrap items-center gap-2 w-[70vw]">
           {book.tags !== undefined
             ? book.tags.map((tag, i) => (
@@ -128,7 +131,7 @@ const App = () => {
             : null}
           <div className=" flex items-center border-2 rounded-lg ">
             <input
-              className="w-24 bg-black h-6 rounded"
+              className="w-24 bg-black h-6 rounded p-1"
               onChange={onChangeTagInput}
               onKeyDown={listenKeyEvent}
               value={tagInput}
@@ -142,6 +145,7 @@ const App = () => {
             </button>
           </div>
         </div>
+        {/* </div> */}
         {/* Add other properties as needed */}
       </div>
     </div>

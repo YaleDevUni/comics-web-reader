@@ -52,14 +52,17 @@ async function processZipData(
       }
       // if (addOnly) break;
     }
-    db.books.add({
-      title: fileName,
-      author: "",
-      handle,
-      image: compressedImage,
-      volume: webpImages.length,
-      tags: [],
-    });
+    const isExist = await db.books.get({ title: fileName });
+    if (!reOpen && !isExist) {
+      db.books.add({
+        title: fileName,
+        author: "",
+        handle,
+        image: compressedImage,
+        volume: webpImages.length,
+        tags: [],
+      });
+    }
     // Sort the array by name
     webpImages.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {

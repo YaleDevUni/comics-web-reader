@@ -146,7 +146,6 @@ const Viewer: React.FC = () => {
     const handleDisplayContent = async () => {
       try {
         if (fileHandle.base64String) {
-          console.log(searchParams.get("new") === "true");
           const images = await processZipData(
             fileHandle.base64String,
             fileHandle.name,
@@ -203,7 +202,7 @@ const Viewer: React.FC = () => {
                 value={jumpPage}
                 onChange={(e) => setJumpPage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="m-2 border-0 p-2 rounded-md bg-gray-100 w-12 text-center"
+                className="m-2 border-0 p-2 rounded-md bg-black w-12 text-center"
               />
               <div>{webpImages.length}</div>
             </div>
