@@ -23,7 +23,7 @@ export default function RootLayout({
           content="Uef0m15hRaJcKbjoc6d4A81FK93U4EwXgqeiArhiFHU"
         />
       </head>
-      <body className={`${inter.className} flex`}>
+      <body className={`${inter.className} flex bg-gray-700 text-white`}>
         <Nav />
         <div className="h-screen overflow-y-auto w-full">{children}</div>
       </body>
