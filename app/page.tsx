@@ -10,7 +10,7 @@ export default function Home() {
   const isLoading = !books;
   // check if there is new book added
   return (
-    <div className="m-2 flex flex-col justify-between h-screen">
+    <div className="p-2 flex flex-col justify-between h-screen">
       {isLoading ? (
         <div className="grid grid-cols-6 gap-4 text-white">
           {Array.from(Array(5).keys())
