@@ -27,6 +27,7 @@ async function processZipData(
     // Process the contents of the ZIP file
     // (In this case, assuming it contains WebP images)
     const imageNames: string[] = Object.keys(zipInstance.files);
+    let compressedImage: Blob | undefined;
     for (const imageName of imageNames) {
       // Skip files or directories with names starting with "__MACOSX"
       if (imageName.startsWith("__MACOSX/")) {
@@ -46,17 +47,18 @@ async function processZipData(
       // Add the WebP image to the array
       webpImages.push({ name: imageName, data: imageData });
       if (webpImages.length === 1 && !reOpen) {
-        const imageBlob = new Blob([imageData], { type: "image/webp" });
-        const compressedImage = await compress(imageBlob, { quality: 0.1 });
-        db.books.add({
-          title: fileName,
-          author: "",
-          handle,
-          image: compressedImage,
-        });
+        const imageBlob = new Blob([imageData]);
+        compressedImage = await compress(imageBlob, { quality: 0.1 });
       }
-      if (addOnly) break;
+      // if (addOnly) break;
     }
+    db.books.add({
+      title: fileName,
+      author: "",
+      handle,
+      image: compressedImage,
+      volume: webpImages.length,
+    });
     // Sort the array by name
     webpImages.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
