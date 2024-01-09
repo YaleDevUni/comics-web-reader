@@ -58,6 +58,7 @@ async function processZipData(
       handle,
       image: compressedImage,
       volume: webpImages.length,
+      tags: [],
     });
     // Sort the array by name
     webpImages.sort((a, b) => a.name.localeCompare(b.name));
