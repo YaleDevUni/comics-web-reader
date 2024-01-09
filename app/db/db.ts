@@ -12,7 +12,7 @@ export interface Book {
   title: string;
   author: string;
   volume: number;
-  tags?: Tag[];
+  tags: Tag[];
   genre?: string[];
   series?: Series;
   handle?: FileSystemFileHandle;

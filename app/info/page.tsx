@@ -25,48 +25,45 @@ const App = () => {
   });
   const onChangeTagInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagInput(e.target.value);
-    console.log(tagInput);
   };
 
-  const updateBookTags = async () => {
+  const updateTags = async () => {
     const isTagExist = await db.tags.get({ name: tagInput });
-    if (isTagExist === undefined) {
-      await db.tags.add({ name: tagInput });
-    } else {
-      if (book.tags?.some((tag) => tag.name === tagInput)) {
-        setTagInput("");
+    isTagExist ? db.tags.add({ name: tagInput }) : null;
+  };
+
+  const updateBookTags = () => {
+    if (tagInput !== "") {
+      // check if the tag already exist in the book
+      const isTagExist = book.tags?.some((tag) => tag.name === tagInput);
+      if (isTagExist) {
         alert("Tag already exist");
         return;
+      } else {
+        book.tags?.push({ name: tagInput });
+        setBook({ ...book, tags: book.tags });
+        db.books.update(parseInt(searchParams.get("index") as string, 10), {
+          tags: book?.tags,
+        });
       }
-    }
-
-    if (book?.tags) {
-      // check if the tag already exist in the book
-      const updatedTags = [...book.tags, { name: tagInput }];
-
-      setBook({ ...book, tags: updatedTags });
-    } else {
-      setBook({ ...book, tags: [{ name: tagInput }] });
-    }
-    db.books.update(parseInt(searchParams.get("index") as string, 10), {
-      tags: book?.tags,
-    });
-  };
-  const handleUpdateTag = () => {
-    console.log(tagInput);
-    if (tagInput !== "") {
-      updateBookTags();
     } else {
       alert("Tag cannot be empty");
     }
     setTagInput("");
   };
+
+  const handleUpdateTag = () => {
+    updateTags();
+    updateBookTags();
+  };
+
   const listenKeyEvent = (event: React.KeyboardEvent<HTMLDivElement>) => {
     // Handle the key event here
     if (event.key === "Enter") {
       handleUpdateTag();
     }
   };
+
   useEffect(() => {
     const fetchBook = async () => {
       const bookId = parseInt(searchParams.get("index") as string, 10);
