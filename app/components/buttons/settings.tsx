@@ -22,4 +22,13 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 	);
 };
 
-export default SettingsProvider;
+export const SettingsButton: React.FC<Props> = ({ children }) => {
+	return (
+		<div>
+			{children}
+		</div>
+	)
+}
+
+// export default SettingsProvider;
+export default SettingsButton;

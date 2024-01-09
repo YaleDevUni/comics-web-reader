@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { IoHome } from "react-icons/io5";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaWrench } from "react-icons/fa";
 import OpenAndSave from "../buttons/open-and-save";
+import SettingsButton from "../buttons/settings";
 
 export default function Nav() {
   return (
@@ -13,8 +14,9 @@ export default function Nav() {
       <OpenAndSave>
         <FaPlusCircle size={30} className="fill-white" />
       </OpenAndSave>
-	  <>
-	  </>
+	  <SettingsButton>
+		<FaWrench />
+	  </SettingsButton>
     </div>
   );
 }
