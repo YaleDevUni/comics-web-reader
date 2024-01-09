@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MdAdd } from "react-icons/md";
+
 const App = () => {
   const searchParams = useSearchParams();
   const [tagInput, setTagInput] = useState<string>("");
@@ -91,19 +92,25 @@ const App = () => {
   return (
     <div className="m-2 flex  gap-2 h-screen">
       <div className="bg-black rounded-lg h-min">
-        <div className="relative h-[50vh] w-[20vw] m-6">
+        <div className="relative h-[50vh] w-[20vw] m-2">
           <Link
             href={{
               pathname: "/viewer",
               query: { index: book.id },
             }}
           >
-            <Image
-              src={imageSrc as string}
-              alt="book cover"
-              fill={true}
-              // className="m-2"
-            />
+            {imageSrc === undefined ? (
+              <></>
+            ) : (
+              <Image
+                src={imageSrc as string}
+                alt="book cover"
+                fill={true}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                placeholder="empty"
+                // className="m-2"
+              />
+            )}
           </Link>
         </div>
       </div>
@@ -116,8 +123,10 @@ const App = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2 w-[70vw]">
           {book.tags !== undefined
-            ? book.tags.map((tag) => (
-                <div className=" bg-black rounded-lg p-1 ">{tag.name}</div>
+            ? book.tags.map((tag, i) => (
+                <div className=" bg-black rounded-lg p-1 " key={i + "tags"}>
+                  {tag.name}
+                </div>
               ))
             : null}
           <div className=" flex items-center border-2 rounded-lg ">
