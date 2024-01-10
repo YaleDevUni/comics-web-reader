@@ -21,7 +21,6 @@ const App = () => {
     series: undefined,
     handle: undefined,
     image: undefined,
-    // Add other properties with default values as needed
   });
   const onChangeTagInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagInput(e.target.value);
