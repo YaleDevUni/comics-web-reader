@@ -2,11 +2,10 @@
 import React, { useState, useEffect, use } from "react";
 import processZipData from "../utils/zip-to-webp";
 import { readFileByPicker, readByFileHandle } from "../utils/file-helpers";
-import type { WebPImage as WebPImageInterface } from "../utils/interfaces";
+import type { FileData, WebPImage as WebPImageInterface } from "../utils/interfaces";
 import { useSearchParams } from "next/navigation";
 import { db } from "../db/db";
 import { useRouter } from "next/router";
-import type { FileData } from "../utils/interfaces";
 import {
   FaAngleRight,
   FaAngleDoubleRight,

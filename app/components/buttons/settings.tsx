@@ -12,7 +12,7 @@ export const SettingsContext = React.createContext<SettingsContextType>({
 	setSettings: () => {},
 });
 
-const SettingsProvider: React.FC<Props> = ({ children }) => {
+const SettingsProvider: React.FC<Props> = ({ children }: Props) => {
 	const [settings, setSettings] = useState<Settings>(defaultSettings);
 
 	return (
@@ -22,7 +22,7 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 	);
 };
 
-export const SettingsButton: React.FC<Props> = ({ children }) => {
+export const SettingsButton: React.FC<Props> = ({ children }: Props) => {
 	return (
 		<div>
 			{children}
