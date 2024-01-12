@@ -76,7 +76,6 @@ const App = () => {
       );
       setImageSrc(blobURL);
     };
-
     fetchBook();
   }, []);
 

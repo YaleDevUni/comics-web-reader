@@ -58,7 +58,28 @@ export default function Home() {
   // check if there is new book added
   return (
     <div className="p-2">
-      <div className=" flex justify-end relative mb-2">
+      <div className=" flex justify-end relative mb-2 gap-2">
+        <Link
+          href={{
+            pathname: "/",
+            query: {
+              page,
+              sort: searchParams.get("sort"),
+              direction:
+                searchParams.get("direction") === "asc" ? "desc" : "asc",
+            },
+          }}
+          // onBlur={handleToggleDropdown}
+          className="bg-gray-900 rounded-md p-2 flex items-center justify-center px-4 relative hover:bg-gray-800"
+        >
+          <span>
+            {searchParams.get("direction") === "asc" ? (
+              <FaArrowUp />
+            ) : (
+              <FaArrowDown />
+            )}
+          </span>
+        </Link>
         <button
           // onBlur={handleToggleDropdown}
           className="bg-gray-900 rounded-md p-2 flex items-center justify-center px-8 relative hover:bg-gray-800"
@@ -78,24 +99,12 @@ export default function Home() {
                   query: {
                     page,
                     sort: "title",
-                    direction:
-                      searchParams.get("sort") === "title" &&
-                      searchParams.get("direction") === "asc"
-                        ? "desc"
-                        : "asc",
+                    direction: searchParams.get("direction") ?? "desc",
                   },
                 }}
                 className="bg-gray-900 rounded-t-md py-1 w-full flex items-center justify-center hover:bg-gray-800"
               >
                 Name{" "}
-                <span className="ml-4">
-                  {searchParams.get("sort") === "title" &&
-                  searchParams.get("direction") === "asc" ? (
-                    <FaArrowUp />
-                  ) : (
-                    <FaArrowDown />
-                  )}
-                </span>
               </Link>
             </li>
             {/* <hr className=" bg-white opacity-30" /> */}
@@ -106,24 +115,12 @@ export default function Home() {
                   query: {
                     page,
                     sort: "id",
-                    direction:
-                      searchParams.get("sort") === "id" &&
-                      searchParams.get("direction") === "asc"
-                        ? "desc"
-                        : "asc",
+                    direction: searchParams.get("direction") ?? "desc",
                   },
                 }}
                 className="bg-gray-900 rounded-b-md py-1 w-full flex items-center justify-center hover:bg-gray-800"
               >
                 Date Added{" "}
-                <span className="ml-4">
-                  {searchParams.get("sort") === "id" &&
-                  searchParams.get("direction") === "asc" ? (
-                    <FaArrowUp />
-                  ) : (
-                    <FaArrowDown />
-                  )}
-                </span>
               </Link>
             </li>
             <hr className=" bg-white opacity-10" />
