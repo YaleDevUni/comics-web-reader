@@ -1,38 +1,33 @@
 "use client";
-
-import Link from "next/link";
+import { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Book, db } from "./db/db";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { FaCaretDown, FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { useSearchParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { Book, db } from "./db/db";
+
 export default function Home() {
-  const BOOKS_PER_PAGE = 11;
+  const DEFAULT_BOOKS_PER_PAGE = 11;
+  const booksPerPageOptions = [11, 17, 23, 29, 35];
   const searchParams = useSearchParams();
+  const totalBooks = useLiveQuery(() => db.books.count()) ?? 0;
+  const [books, setBooks] = useState<Book[] | undefined>(undefined);
+  const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
+  const [booksPerPage, setBooksPerPage] = useState<number>(
+    DEFAULT_BOOKS_PER_PAGE
+  );
   const page =
     searchParams.get("page") !== null
       ? parseInt(searchParams.get("page") as string, 10)
       : 1;
 
-  const totalBooks = useLiveQuery(() => db.books.count()) ?? 0;
-  const [books, setBooks] = useState<Book[] | undefined>(undefined);
-  const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
-
-  const handleToggleDropdown = () => {
-    console.log("toggle");
-    setToggleDropdown(!toggleDropdown);
-  };
-  const handleCloseDropdown = () => {
-    setToggleDropdown(false);
-  };
-
   useLiveQuery(() => {
     if (searchParams.get("direction") === "desc") {
       db.books
-        .offset(BOOKS_PER_PAGE * (page - 1))
-        .limit(BOOKS_PER_PAGE)
+        .offset(DEFAULT_BOOKS_PER_PAGE * (page - 1))
+        .limit(DEFAULT_BOOKS_PER_PAGE)
         .sortBy(searchParams.get("sort") ?? "title")
         .then((result) => {
           setBooks(result);
@@ -40,8 +35,8 @@ export default function Home() {
     } else {
       db.books
         .reverse()
-        .offset(BOOKS_PER_PAGE * (page - 1))
-        .limit(BOOKS_PER_PAGE)
+        .offset(DEFAULT_BOOKS_PER_PAGE * (page - 1))
+        .limit(DEFAULT_BOOKS_PER_PAGE)
         .sortBy(searchParams.get("sort") ?? "title")
         .then((result) => {
           setBooks(result);
@@ -53,7 +48,27 @@ export default function Home() {
     searchParams.get("sort"),
     searchParams.get("direction"),
   ]);
-
+  /**
+   * @description create image url for each book
+   */
+  const bookImages = useMemo(
+    () =>
+      books?.map((book) => ({
+        id: book.id,
+        imageSrc: URL.createObjectURL(
+          new Blob([book.image as BlobPart], { type: "image/webp" })
+        ),
+      })),
+    [books]
+  );
+  const handleSetBooksPerPage = () => {};
+  const handleToggleDropdown = () => {
+    console.log("toggle");
+    setToggleDropdown(!toggleDropdown);
+  };
+  const handleCloseDropdown = () => {
+    setToggleDropdown(false);
+  };
   const isLoading = !books;
   // check if there is new book added
   return (
@@ -163,11 +178,10 @@ export default function Home() {
                     className="col-span-1 bg-gray-900 rounded-md p-2 "
                   >
                     <Image
-                      src={URL.createObjectURL(
-                        new Blob([book.image as BlobPart], {
-                          type: "image/webp",
-                        })
-                      )}
+                      src={
+                        bookImages?.find((image) => image.id === book.id)
+                          ?.imageSrc as string
+                      }
                       alt="book cover"
                       width={500}
                       height={200}
@@ -197,31 +211,31 @@ export default function Home() {
           </>
         )}
         <div className="text-center">
-          {Array.from({ length: Math.ceil(totalBooks / BOOKS_PER_PAGE) }).map(
-            (_, i) => {
-              const currentPage = page;
-              const pageWithinRange =
-                i + 1 >= currentPage - 5 && i + 1 <= currentPage + 5;
+          {Array.from({
+            length: Math.ceil(totalBooks / DEFAULT_BOOKS_PER_PAGE),
+          }).map((_, i) => {
+            const currentPage = page;
+            const pageWithinRange =
+              i + 1 >= currentPage - 5 && i + 1 <= currentPage + 5;
 
-              return pageWithinRange ? (
-                i + 1 === currentPage ? (
-                  <span key={i + "page"} className="mx-2 text-lg">
-                    <b>{i + 1}</b>
-                  </span>
-                ) : (
-                  <Link
-                    key={i + "page"}
-                    href={{
-                      pathname: "/",
-                      query: { page: i + 1 },
-                    }}
-                  >
-                    <button className="mx-2">{i + 1}</button>
-                  </Link>
-                )
-              ) : null;
-            }
-          )}
+            return pageWithinRange ? (
+              i + 1 === currentPage ? (
+                <span key={i + "page"} className="mx-2 text-lg">
+                  <b>{i + 1}</b>
+                </span>
+              ) : (
+                <Link
+                  key={i + "page"}
+                  href={{
+                    pathname: "/",
+                    query: { page: i + 1 },
+                  }}
+                >
+                  <button className="mx-2">{i + 1}</button>
+                </Link>
+              )
+            ) : null;
+          })}
           <hr className="m-2" />
           <p>
             This version supports .jpeg, .webp, .png, and .gif images in Zip
