@@ -33,6 +33,7 @@ export interface Settings {
 	reversed: boolean;
 	doublePage: boolean;
 	darkmode: boolean;
+	displayPerPage: number;
 }
 
 export class MySubClassedDexie extends Dexie {
@@ -47,7 +48,7 @@ export class MySubClassedDexie extends Dexie {
         "++id, title, author, category, genre, seriesTitle, seriesNumber, handle, image",
       booksImages: "++id, bookId, image",
       tags: "++id, name",
-	  settings: "++id, reversed, doublePage, darkmode",
+	  settings: "++id, reversed, doublePage, darkmode, displayPerPage",
     });
 
   }
