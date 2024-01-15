@@ -20,14 +20,3 @@ export interface FileData {
   name: string;
   handle?: FileSystemFileHandle | undefined;
 }
-
-export interface Settings {
-	reversed: boolean;
-	doublePage: boolean;
-	darkmode: boolean;
-}
-
-export type SettingsContextType = {
-  settings: Settings;
-  setSettings: (settings: Settings) => void;
-}
