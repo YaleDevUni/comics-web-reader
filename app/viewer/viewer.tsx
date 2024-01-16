@@ -35,7 +35,11 @@ const Viewer: React.FC = () => {
   };
   const [webpImages, setWebpImages] = useState<WebPImageInterface[]>([]);
   const [fileHandle, setFileHandle] = useState<FileData>(defaultFileHandle);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(
+    searchParams.get("page")
+      ? parseInt(searchParams.get("page") as string, 10) - 1
+      : 0
+  );
   const [jumpPage, setJumpPage] = useState<string>("");
   /**
    * load file content by handle
@@ -153,7 +157,6 @@ const Viewer: React.FC = () => {
             searchParams.get("new") !== "true"
           );
           setWebpImages(images);
-          setCurrentImageIndex(0);
         }
       } catch (error) {
         console.error("Error processing ZIP file:", error);
@@ -163,10 +166,36 @@ const Viewer: React.FC = () => {
     // Call handleDisplayContent when fileHandle changes
     handleDisplayContent();
   }, [fileHandle]);
+
   /**
+   * store current image index to db
    * update jump page when current image index changes
    */
   useEffect(() => {
+    const resumePageHandler = async (reset: boolean = false) => {
+      try {
+        if (fileHandle && searchParams.get("index") && currentImageIndex >= 1) {
+          if (reset) {
+            db.books.update(parseInt(searchParams.get("index") as string, 10), {
+              page: 1,
+            });
+            return;
+          }
+          db.books.update(parseInt(searchParams.get("index") as string, 10), {
+            page: currentImageIndex + 1,
+          });
+        }
+      } catch (error: any) {
+        console.error(error.message);
+      }
+    };
+    // if last page, alert and set resume page to 1
+    if (currentImageIndex === webpImages.length - 1) {
+      alert("Last page");
+      resumePageHandler(true);
+    } else {
+      resumePageHandler();
+    }
     setJumpPage((currentImageIndex + 1).toString());
   }, [currentImageIndex]);
 

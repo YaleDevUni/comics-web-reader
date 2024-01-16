@@ -91,7 +91,7 @@ const App = () => {
           <Link
             href={{
               pathname: "/viewer",
-              query: { index: book.id },
+              query: { index: book.id, page: 1 },
             }}
           >
             {imageSrc === undefined ? (
@@ -105,6 +105,19 @@ const App = () => {
                 placeholder="empty"
                 // className="m-2"
               />
+            )}
+            {book.page === undefined || book.page == 1 ? (
+              <></>
+            ) : (
+              <Link
+                href={{
+                  pathname: "/viewer",
+                  query: { index: book.id, page: book.page || 1 },
+                }}
+                className="absolute bottom-0 right-0 bg-orange-500  p-1 rounded-tl-lg"
+              >
+                Continue Page({book.page})
+              </Link>
             )}
           </Link>
         </div>

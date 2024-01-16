@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { FaCaretDown, FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { FaCaretDown, FaArrowUp, FaArrowDown, FaEye } from "react-icons/fa";
 import { Book, db } from "./db/db";
 
 export default function Home() {
@@ -175,7 +175,7 @@ export default function Home() {
                       query: { index: book.id },
                     }}
                     key={book.id + "link"}
-                    className="col-span-1 bg-gray-900 rounded-md p-2 "
+                    className="col-span-1 bg-gray-900 rounded-md p-2 relative"
                   >
                     <Image
                       src={
@@ -193,6 +193,14 @@ export default function Home() {
                     >
                       {book.title.split(".")[0]}
                     </div>
+                    {book.page === undefined || book.page == 1 ? (
+                      <></>
+                    ) : (
+                      <FaEye
+                        className="absolute top-0 right-0 fill-white bg-orange-500 rounded-bl-lg rounded-tr-md px-1"
+                        size="15%"
+                      />
+                    )}
                   </Link>
                 ))
                 .concat(

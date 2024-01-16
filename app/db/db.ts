@@ -17,6 +17,7 @@ export interface Book {
   series?: Series;
   handle?: FileSystemFileHandle;
   image?: Uint8Array | Blob | string;
+  page?: number;
 }
 
 export interface BookImage {
@@ -32,7 +33,7 @@ export class MySubClassedDexie extends Dexie {
     super("myDatabase");
     this.version(1).stores({
       books:
-        "++id, title, author, category, genre, seriesTitle, seriesNumber, handle, image",
+        "++id, title, author, category, genre, seriesTitle, seriesNumber, handle, image, page",
       booksImages: "++id, bookId, image",
       tags: "++id, name",
     });
