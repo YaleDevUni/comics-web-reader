@@ -1,12 +1,13 @@
 "use client";
-import { useMemo, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { FaCaretDown, FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { FaCaretDown, FaArrowUp, FaArrowDown, FaEye } from "react-icons/fa";
 import { Book, db } from "./db/db";
+import { useEffect } from "react";
 
 export default function Home() {
   const DEFAULT_BOOKS_PER_PAGE = 11;
@@ -15,6 +16,7 @@ export default function Home() {
   const totalBooks = useLiveQuery(() => db.books.count()) ?? 0;
   const [books, setBooks] = useState<Book[] | undefined>(undefined);
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
+  const [nextBookIndex, setNextBookIndex] = useState<number | undefined>(0);
   const [booksPerPage, setBooksPerPage] = useState<number>(
     DEFAULT_BOOKS_PER_PAGE
   );
@@ -48,6 +50,21 @@ export default function Home() {
     searchParams.get("sort"),
     searchParams.get("direction"),
   ]);
+  useEffect(() => {
+    const getLastInsertedId = async () => {
+      const lastRecord = await db.transaction("rw", db.books, async () => {
+        return await db.books.orderBy(":id").last();
+      });
+      return lastRecord ? lastRecord.id : 0;
+    };
+    const updateLastInsertedId = async () => {
+      const lastId = await getLastInsertedId();
+      if (lastId !== undefined) setNextBookIndex(lastId + 1);
+      else setNextBookIndex(0);
+    };
+    updateLastInsertedId();
+  }, [books]);
+
   /**
    * @description create image url for each book
    */
@@ -61,6 +78,8 @@ export default function Home() {
       })),
     [books]
   );
+  // Function to get the last inserted ID
+
   const handleSetBooksPerPage = () => {};
   const handleToggleDropdown = () => {
     console.log("toggle");
@@ -69,6 +88,7 @@ export default function Home() {
   const handleCloseDropdown = () => {
     setToggleDropdown(false);
   };
+
   const isLoading = !books;
   // check if there is new book added
   return (
@@ -106,7 +126,7 @@ export default function Home() {
           </span>
         </button>
         {toggleDropdown ? (
-          <ul className=" absolute  top-11 ">
+          <ul className=" absolute top-11 z-10">
             <li className=" w-40">
               <Link
                 href={{
@@ -175,7 +195,7 @@ export default function Home() {
                       query: { index: book.id },
                     }}
                     key={book.id + "link"}
-                    className="col-span-1 bg-gray-900 rounded-md p-2 "
+                    className="col-span-1 bg-gray-900 rounded-md p-2 relative"
                   >
                     <Image
                       src={
@@ -193,6 +213,14 @@ export default function Home() {
                     >
                       {book.title.split(".")[0]}
                     </div>
+                    {book.page === undefined || book.page == 1 ? (
+                      <></>
+                    ) : (
+                      <FaEye
+                        className="absolute top-0 right-0 fill-white bg-orange-500 rounded-bl-lg rounded-tr-md px-1"
+                        size="15%"
+                      />
+                    )}
                   </Link>
                 ))
                 .concat(
@@ -201,7 +229,7 @@ export default function Home() {
                     key={"addBookLink"}
                     href={{
                       pathname: "/viewer",
-                      query: { index: books.length + 1, new: true },
+                      query: { index: nextBookIndex, new: true },
                     }}
                   >
                     <IoMdAddCircleOutline className="fill-white" size={200} />
