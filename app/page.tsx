@@ -126,7 +126,7 @@ export default function Home() {
           </span>
         </button>
         {toggleDropdown ? (
-          <ul className=" absolute  top-11 ">
+          <ul className=" absolute top-11 z-10">
             <li className=" w-40">
               <Link
                 href={{
