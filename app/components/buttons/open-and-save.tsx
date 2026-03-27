@@ -1,13 +1,10 @@
 import { readFileByPicker } from "../../utils/file-helpers";
 import processZipData from "../../utils/zip-to-webp";
+import { Props } from "../../utils/interfaces"
 
-export default function OpenAndSave({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function OpenAndSave({ children }: Props) {
   const pickerOpts = {
-    types: [
+    types:[
       {
         description: "Zip",
         accept: {
@@ -34,5 +31,9 @@ export default function OpenAndSave({
     }
   };
 
-  return <button onClick={loadFileContent}>{children}</button>;
+  return (
+  	<button onClick={loadFileContent}>
+		{children}
+	</button>
+  );
 }
